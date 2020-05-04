@@ -7,7 +7,6 @@ library(lubridate)
 library(broom)
 library(readxl)
 
-
 #Count the number of Fires that occured in a city's boundary for a given month/year. 
 #Then sum the total acreage burned within a city's boundary for a given month/year. Combine those into one data frame.
 City_Fire_Count <- X2007_2018_CA_FIRES%>%
