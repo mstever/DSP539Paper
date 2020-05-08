@@ -1,4 +1,5 @@
 # DSP539Paper
+<<<<<<< HEAD
 library(dplyr)
 library(tidyverse)
 library(tidyr)
@@ -76,3 +77,5 @@ Yearly_Fire_Season_Average<- ggplot(Fire_Season_Average, aes(Year, Average_F_Sea
 
 print(Yearly_Fire_Season_Average)
 
+=======
+>>>>>>> f7388cb479c3e3d31f01ae0a2a62d29095024fc3
