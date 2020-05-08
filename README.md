@@ -44,24 +44,22 @@ City_County_Fire_Sum_Count<- City_Fire_Sum_Count %>%
   left_join(select(County_Fire_Sum_Count, Counties, Month, Year, Total_County_Fire_Acres, n),
             by = c("Counties", "Month", "Year"))
 
-Seasonal_Average <-City_County_Fire_Sum_Count %>% 
-  filter(!is.na(Total_County_Fire_Acres)) %>% #or use drop_na() to ride of any NA
-  mutate(Season = case_when(Month >= 3 & Month < 6 ~ "Spring",
-                            Month >= 6 & Month < 9 ~ "Summer",
-                            Month >=9 & Month <12 ~ "Fall",
-                            Month ==12 | Month <3 ~ "Winter"))%>%
-  group_by(Season, Year) %>%
-  summarize(Average_Seasonal_Fire_Acreage = mean(Total_County_Fire_Acres))
-
-
 #Create graphs
-Yearly_Seasonal_Average_Acres<-ggplot(Seasonal_Average, aes(Year, Average_Seasonal_Fire_Acreage)) + 
-  geom_point() + facet_wrap(~Season)+theme_bw()+
-  labs(title = "Comparing Average Acres Burned In California from 2007-2008 by Season", x= "Year", y= "Total County Fire Acres Burned", color="") +
-  scale_x_continuous(breaks = c(2007, 2010, 2013, 2016, 2018))+
-  scale_y_continuous(limits=c(0, 400000))
+City_County_Fire_Sum_Count_avg<- City_County_Fire_Sum_Count%>%
+  filter(!is.na(n.y)) %>% #or use drop_na() to ride of any NA
+  mutate(F_Season = case_when(Month >= 8 | Month < 5 ~ "Fire Season",
+                              Month == 5 | Month < 8 ~ "Not Fire Season"))%>%
+  group_by(F_Season, Year) %>%
+  summarize(Average_County_Fire_Count = mean(n.y))
 
-print(Yearly_Seasonal_Average_Acres)
+Yearly_Fire_Count_Average<- ggplot(City_County_Fire_Sum_Count_avg, aes(Year, Average_County_Fire_Count)) + 
+  geom_point() + geom_line() + facet_wrap(~F_Season)+theme_bw()+
+  labs(title = "Comparing Average Number of Fires In California from 2007-2008 in and out of Fire Season", x= "Year", y= "Average Number of Fires", color="") +
+  scale_x_continuous(breaks = c(2007, 2010, 2013, 2016, 2018))+
+  scale_y_continuous(limits=c(0, 5))
+
+print(Yearly_Fire_Count_Average)
+
 
 Fire_Season_Average <-City_County_Fire_Sum_Count %>% 
   filter(!is.na(Total_County_Fire_Acres)) %>% #or use drop_na() to ride of any NA
@@ -72,8 +70,9 @@ Fire_Season_Average <-City_County_Fire_Sum_Count %>%
 
 Yearly_Fire_Season_Average<- ggplot(Fire_Season_Average, aes(Year, Average_F_Seasonal_Fire_Acreage)) + 
   geom_point() + geom_line() + facet_wrap(~F_Season)+theme_bw()+
-  labs(title = "Comparing Average Acres Burned In California from 2007-2008 in and out of Fire Season", x= "Year", y= "Total County Fire Acres Burned", color="") +
+  labs(title = "Comparing Average Acres Burned In California from 2007-2008 in and out of Fire Season", x= "Year", y= "Average Fire Acres Burned", color="") +
   scale_x_continuous(breaks = c(2007, 2010, 2013, 2016, 2018))+
   scale_y_continuous(limits=c(0, 150000))
 
 print(Yearly_Fire_Season_Average)
+
